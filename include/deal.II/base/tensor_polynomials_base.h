@@ -51,8 +51,7 @@ public:
    * which assigned to @p my_degree on construction. @p n is assigned to @n_pols
    * on construction.
    */
-  TensorPolynomialsBase(const unsigned int k,
-                        const unsigned int n);
+  TensorPolynomialsBase(const unsigned int k, const unsigned int n);
 
   /**
    * Move constructor.
