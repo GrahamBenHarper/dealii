@@ -28,7 +28,7 @@ PolynomialsBase<dim>::PolynomialsBase(const unsigned int k)
   : my_degree(k)
   , n_pols(compute_n_pols(k))
 {
-  // nothing to do here for now  
+  // nothing to do here for now
 }
 
 

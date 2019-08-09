@@ -13,7 +13,7 @@
 //
 // ---------------------------------------------------------------------
 
-//NOTE: The required calls for FE_PolyTensor seem to be
+// NOTE: The required calls for FE_PolyTensor seem to be
 // poly_space.compute(), poly_space.n(), and poly_space.degree()
 // poly_space.n() will be filled by the function compute_n_pols(k).
 
@@ -38,12 +38,12 @@ DEAL_II_NAMESPACE_OPEN
  * This class provides a framework for the finite element polynomial
  * classes for use with finite element classes that are derived from
  * @p FE_Poly and @p FE_PolyTensor. An object of this type is stored
- * as a member variable in the finite element class. 
+ * as a member variable in the finite element class.
  *
  * <h3>Deriving classes</h3>
  *
- * Any derived class must provide a the most basic properties for shape 
- * functions evaluated on the reference cell. 
+ * Any derived class must provide a the most basic properties for shape
+ * functions evaluated on the reference cell.
  *
  * @ingroup Polynomials
  * @author Graham Harper
@@ -53,13 +53,13 @@ template <int dim>
 class PolynomialsBase
 {
   /**
-   * Constructor. 
+   * Constructor.
    */
   PolynomialsBase(const unsigned int k);
-  
+
   /**
-    * Move constructor.
-    */
+   * Move constructor.
+   */
   PolynomialsBase(PolynomialsBase<dim> &&) = default; // NOLINT
 
   /**
@@ -72,16 +72,16 @@ class PolynomialsBase
    * properly.
    */
   virtual ~PolynomialsBase() = default;
-  
+
   /**
-   * Compute the value and the derivatives of the polynomials at 
+   * Compute the value and the derivatives of the polynomials at
    * @p unit_point.
    *
    * The size of the vectors must either be zero or equal <tt>n()</tt>.  In
    * the first case, the function will not compute these values.
    *
    * If you need values or derivatives of all polynomials then use this
-   * function, rather than using any of the <tt>compute_value</tt>, 
+   * function, rather than using any of the <tt>compute_value</tt>,
    * <tt>compute_grad</tt> or <tt>compute_grad_grad</tt> functions, see below,
    * in a loop over all tensor product polynomials.
    */
@@ -118,7 +118,7 @@ class PolynomialsBase
    */
   virtual std::unique_ptr<PolynomialsBase<dim>>
   clone() const = 0;
-  
+
   /**
    * Return the name of the space.
    */
