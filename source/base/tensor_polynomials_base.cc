@@ -14,7 +14,7 @@
 // ---------------------------------------------------------------------
 
 
-#include <deal.II/base/polynomials_base.h>
+#include <deal.II/base/tensor_polynomials_base.h>
 #include <deal.II/base/quadrature_lib.h>
 #include <deal.II/base/thread_management.h>
 
@@ -24,26 +24,18 @@
 DEAL_II_NAMESPACE_OPEN
 
 template <int dim>
-PolynomialsBase<dim>::PolynomialsBase(const unsigned int k)
+TensorPolynomialsBase<dim>::TensorPolynomialsBase(const unsigned int k,
+                                                  const unsigned int n)
   : my_degree(k)
-  , n_pols(compute_n_pols(k))
+  , n_pols(n)
 {
   // nothing to do here for now
 }
 
 
-template <int dim>
-unsigned int
-PolynomialsBase<dim>::compute_n_pols(unsigned int /*k*/) const
-{
-  Assert(false, ExcNotImplemented());
-  return 0;
-}
 
-
-
-template class PolynomialsBase<1>;
-template class PolynomialsBase<2>;
-template class PolynomialsBase<3>;
+template class TensorPolynomialsBase<1>;
+template class TensorPolynomialsBase<2>;
+template class TensorPolynomialsBase<3>;
 
 DEAL_II_NAMESPACE_CLOSE

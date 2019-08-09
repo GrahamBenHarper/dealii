@@ -13,22 +13,15 @@
 //
 // ---------------------------------------------------------------------
 
-// NOTE: The required calls for FE_PolyTensor seem to be
-// poly_space.compute(), poly_space.n(), and poly_space.degree()
-// poly_space.n() will be filled by the function compute_n_pols(k).
-
-#ifndef dealii_polynomials_base_h
-#define dealii_polynomials_base_h
+#ifndef dealii_tensor_polynomials_base_h
+#define dealii_tensor_polynomials_base_h
 
 
 #include <deal.II/base/config.h>
 
 #include <deal.II/base/exceptions.h>
 #include <deal.II/base/point.h>
-#include <deal.II/base/polynomial.h>
-#include <deal.II/base/polynomial_space.h>
 #include <deal.II/base/tensor.h>
-#include <deal.II/base/tensor_product_polynomials.h>
 
 #include <vector>
 
@@ -42,7 +35,7 @@ DEAL_II_NAMESPACE_OPEN
  *
  * <h3>Deriving classes</h3>
  *
- * Any derived class must provide a the most basic properties for shape
+ * Any derived class must provide the most basic properties for shape
  * functions evaluated on the reference cell.
  *
  * @ingroup Polynomials
@@ -50,28 +43,32 @@ DEAL_II_NAMESPACE_OPEN
  * @date 2019
  */
 template <int dim>
-class PolynomialsBase
+class TensorPolynomialsBase
 {
+public:
   /**
-   * Constructor.
+   * Constructor. This takes a integer @p k from the finite element class,
+   * which assigned to @p my_degree on construction. @p n is assigned to @n_pols
+   * on construction.
    */
-  PolynomialsBase(const unsigned int k);
+  TensorPolynomialsBase(const unsigned int k,
+                        const unsigned int n);
 
   /**
    * Move constructor.
    */
-  PolynomialsBase(PolynomialsBase<dim> &&) = default; // NOLINT
+  TensorPolynomialsBase(TensorPolynomialsBase<dim> &&) = default; // NOLINT
 
   /**
    * Copy constructor.
    */
-  PolynomialsBase(const PolynomialsBase<dim> &) = default;
+  TensorPolynomialsBase(const TensorPolynomialsBase<dim> &) = default;
 
   /**
    * Virtual destructor. Makes sure that pointers to this class are deleted
    * properly.
    */
-  virtual ~PolynomialsBase() = default;
+  virtual ~TensorPolynomialsBase() = default;
 
   /**
    * Compute the value and the derivatives of the polynomials at
@@ -96,13 +93,13 @@ class PolynomialsBase
   /**
    * Return the number of polynomials.
    */
-  virtual unsigned int
+  unsigned int
   n() const;
 
   /**
-   * Return the degree of the space.
+   * Return the polynomial degree of the space.
    */
-  virtual unsigned int
+  unsigned int
   degree() const;
 
   /**
@@ -111,12 +108,11 @@ class PolynomialsBase
    * here in this base class and return an object of the same type as the
    * derived class.
    *
-   * Some places in the library, for
-   * example the constructors of FE_Poly and FE_PolyTensor need to make copies
-   * of polynomial spaces without knowing their exact type. They do so through
-   * this function.
+   * Some places in the library, for example the constructors of FE_Poly
+   * and FE_PolyTensor need to make copies of polynomial spaces without knowing
+   * their exact type. They do so through this function.
    */
-  virtual std::unique_ptr<PolynomialsBase<dim>>
+  virtual std::unique_ptr<TensorPolynomialsBase<dim>>
   clone() const = 0;
 
   /**
@@ -126,11 +122,11 @@ class PolynomialsBase
   get_name() const = 0;
 
   /**
-   * Return the number of polynomials in the space. This must be overridden by
-   * the derived class.
+   * Return the number of polynomials in the space based on the polynomial space
+   * degree @p k. This must be overridden by the derived class.
    */
   virtual unsigned int
-  compute_n_pols(const unsigned int k) const;
+  compute_n_pols(const unsigned int k) const = 0;
 
 private:
   /**
@@ -148,7 +144,7 @@ private:
 
 template <int dim>
 inline unsigned int
-PolynomialsBase<dim>::n() const
+TensorPolynomialsBase<dim>::n() const
 {
   return n_pols;
 }
@@ -157,7 +153,7 @@ PolynomialsBase<dim>::n() const
 
 template <int dim>
 inline unsigned int
-PolynomialsBase<dim>::degree() const
+TensorPolynomialsBase<dim>::degree() const
 {
   return my_degree;
 }
