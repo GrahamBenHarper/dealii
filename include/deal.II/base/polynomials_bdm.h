@@ -24,6 +24,7 @@
 #include <deal.II/base/polynomial.h>
 #include <deal.II/base/polynomial_space.h>
 #include <deal.II/base/tensor.h>
+#include <deal.II/base/tensor_polynomials_base.h>
 #include <deal.II/base/thread_management.h>
 
 #include <vector>
@@ -97,7 +98,7 @@ DEAL_II_NAMESPACE_OPEN
  * @date 2003, 2005, 2009
  */
 template <int dim>
-class PolynomialsBDM
+class PolynomialsBDM : public TensorPolynomialsBase<dim>
 {
 public:
   /**
@@ -128,34 +129,25 @@ public:
           std::vector<Tensor<2, dim>> &grads,
           std::vector<Tensor<3, dim>> &grad_grads,
           std::vector<Tensor<4, dim>> &third_derivatives,
-          std::vector<Tensor<5, dim>> &fourth_derivatives) const;
-
-  /**
-   * Return the number of BDM polynomials.
-   */
-  unsigned int
-  n() const;
-
-  /**
-   * Return the degree of the BDM space, which is one less than the highest
-   * polynomial degree.
-   */
-  unsigned int
-  degree() const;
+          std::vector<Tensor<5, dim>> &fourth_derivatives) const override;
 
   /**
    * Return the name of the space, which is <tt>BDM</tt>.
    */
   std::string
-  name() const;
+  name() const override;
 
   /**
    * Return the number of polynomials in the space <tt>BDM(degree)</tt>
    * without requiring to build an object of PolynomialsBDM. This is required
    * by the FiniteElement classes.
    */
-  static unsigned int
-  compute_n_pols(unsigned int degree);
+  unsigned int
+  compute_n_pols(unsigned int k) const override;
+
+  // documentation inherited from the base class
+  virtual std::unique_ptr<TensorPolynomialsBase<dim>>
+  clone() const override;
 
 private:
   /**
@@ -169,11 +161,6 @@ private:
    * <i>k</i>. In 3D, we need all polynomials from degree zero to <i>k</i>.
    */
   std::vector<Polynomials::Polynomial<double>> monomials;
-
-  /**
-   * Number of BDM polynomials.
-   */
-  unsigned int n_pols;
 
   /**
    * A mutex that guards the following scratch arrays.
@@ -205,22 +192,6 @@ private:
    */
   mutable std::vector<Tensor<4, dim>> p_fourth_derivatives;
 };
-
-
-template <int dim>
-inline unsigned int
-PolynomialsBDM<dim>::n() const
-{
-  return n_pols;
-}
-
-
-template <int dim>
-inline unsigned int
-PolynomialsBDM<dim>::degree() const
-{
-  return polynomial_space.degree() - 1;
-}
 
 
 template <int dim>
