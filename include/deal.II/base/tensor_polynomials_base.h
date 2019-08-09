@@ -118,7 +118,7 @@ public:
    * Return the name of the space.
    */
   virtual std::string
-  get_name() const = 0;
+  name() const = 0;
 
   /**
    * Return the number of polynomials in the space based on the polynomial space
