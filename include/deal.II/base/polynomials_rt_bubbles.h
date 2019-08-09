@@ -128,6 +128,10 @@ public:
   unsigned int
   compute_n_pols(const unsigned int k) const override;
 
+  // documentation inherited from the base class
+  virtual std::unique_ptr<TensorPolynomialsBase<dim>>
+  clone() const override;
+
 private:
   /**
    * An object representing the Raviart-Thomas part of the space

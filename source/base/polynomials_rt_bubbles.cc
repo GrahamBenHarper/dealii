@@ -17,6 +17,7 @@
 #include "deal.II/base/polynomials_rt_bubbles.h"
 
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/std_cxx14/memory.h>
 #include <deal.II/base/thread_management.h>
 
 #include <iomanip>
@@ -839,6 +840,14 @@ PolynomialsRT_Bubbles<dim>::compute_n_pols(const unsigned int k) const
 
   Assert(false, ExcNotImplemented());
   return 0;
+}
+
+
+template <int dim>
+std::unique_ptr<TensorPolynomialsBase<dim>>
+PolynomialsRT_Bubbles<dim>::clone() const
+{
+  return std_cxx14::make_unique<PolynomialsRT_Bubbles<dim>>(*this);
 }
 
 
