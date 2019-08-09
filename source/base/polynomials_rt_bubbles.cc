@@ -27,10 +27,9 @@ DEAL_II_NAMESPACE_OPEN
 
 template <int dim>
 PolynomialsRT_Bubbles<dim>::PolynomialsRT_Bubbles(const unsigned int k)
-  : my_degree(k)
+  : TensorPolynomialsBase<dim>(k, compute_n_pols(k))
   , raviart_thomas_space(k - 1)
   , monomials(k + 2)
-  , n_pols(compute_n_pols(k))
 {
   Assert(dim >= 2, ExcImpossibleInDim(dim));
 
@@ -50,16 +49,16 @@ PolynomialsRT_Bubbles<dim>::compute(
   std::vector<Tensor<4, dim>> &third_derivatives,
   std::vector<Tensor<5, dim>> &fourth_derivatives) const
 {
-  Assert(values.size() == n_pols || values.size() == 0,
-         ExcDimensionMismatch(values.size(), n_pols));
-  Assert(grads.size() == n_pols || grads.size() == 0,
-         ExcDimensionMismatch(grads.size(), n_pols));
-  Assert(grad_grads.size() == n_pols || grad_grads.size() == 0,
-         ExcDimensionMismatch(grad_grads.size(), n_pols));
-  Assert(third_derivatives.size() == n_pols || third_derivatives.size() == 0,
-         ExcDimensionMismatch(third_derivatives.size(), n_pols));
-  Assert(fourth_derivatives.size() == n_pols || fourth_derivatives.size() == 0,
-         ExcDimensionMismatch(fourth_derivatives.size(), n_pols));
+  Assert(values.size() == this->n() || values.size() == 0,
+         ExcDimensionMismatch(values.size(), this->n()));
+  Assert(grads.size() == this->n() || grads.size() == 0,
+         ExcDimensionMismatch(grads.size(), this->n()));
+  Assert(grad_grads.size() == this->n() || grad_grads.size() == 0,
+         ExcDimensionMismatch(grad_grads.size(), this->n()));
+  Assert(third_derivatives.size() == this->n() || third_derivatives.size() == 0,
+         ExcDimensionMismatch(third_derivatives.size(), this->n()));
+  Assert(fourth_derivatives.size() == this->n() || fourth_derivatives.size() == 0,
+         ExcDimensionMismatch(fourth_derivatives.size(), this->n()));
 
   // Third and fourth derivatives are not implemented
   (void)third_derivatives;
@@ -124,11 +123,11 @@ PolynomialsRT_Bubbles<dim>::compute(
       //  monoval_i = x^i,
       //  monoval_plus = x^(k+1)
       for (unsigned int d = 0; d < dim; ++d)
-        monomials[my_degree + 1].value(unit_point(d),
+        monomials[this->degree() + 1].value(unit_point(d),
                                        n_derivatives,
                                        monoval_plus[d]);
 
-      for (unsigned int i = 0; i <= my_degree; ++i, ++start)
+      for (unsigned int i = 0; i <= this->degree(); ++i, ++start)
         {
           for (unsigned int d = 0; d < dim; ++d)
             monomials[i].value(unit_point(d), n_derivatives, monoval_i[d]);
@@ -138,9 +137,9 @@ PolynomialsRT_Bubbles<dim>::compute(
               values[start][0] = monoval_i[0][0] * monoval_plus[1][1];
               values[start][1] = -monoval_i[0][1] * monoval_plus[1][0];
 
-              values[start + my_degree + 1][0] =
+              values[start + this->degree() + 1][0] =
                 -monoval_plus[0][0] * monoval_i[1][1];
-              values[start + my_degree + 1][1] =
+              values[start + this->degree() + 1][1] =
                 monoval_plus[0][1] * monoval_i[1][0];
             }
 
@@ -151,13 +150,13 @@ PolynomialsRT_Bubbles<dim>::compute(
               grads[start][1][0] = -monoval_i[0][2] * monoval_plus[1][0];
               grads[start][1][1] = -monoval_i[0][1] * monoval_plus[1][1];
 
-              grads[start + my_degree + 1][0][0] =
+              grads[start + this->degree() + 1][0][0] =
                 -monoval_plus[0][1] * monoval_i[1][1];
-              grads[start + my_degree + 1][0][1] =
+              grads[start + this->degree() + 1][0][1] =
                 -monoval_plus[0][0] * monoval_i[1][2];
-              grads[start + my_degree + 1][1][0] =
+              grads[start + this->degree() + 1][1][0] =
                 monoval_plus[0][2] * monoval_i[1][0];
-              grads[start + my_degree + 1][1][1] =
+              grads[start + this->degree() + 1][1][1] =
                 monoval_plus[0][1] * monoval_i[1][1];
             }
 
@@ -176,25 +175,25 @@ PolynomialsRT_Bubbles<dim>::compute(
               grad_grads[start][1][1][1] =
                 -monoval_i[0][1] * monoval_plus[1][2];
 
-              grad_grads[start + my_degree + 1][0][0][0] =
+              grad_grads[start + this->degree() + 1][0][0][0] =
                 -monoval_plus[0][2] * monoval_i[1][1];
-              grad_grads[start + my_degree + 1][0][0][1] =
+              grad_grads[start + this->degree() + 1][0][0][1] =
                 -monoval_plus[0][1] * monoval_i[1][2];
-              grad_grads[start + my_degree + 1][0][1][0] =
+              grad_grads[start + this->degree() + 1][0][1][0] =
                 -monoval_plus[0][1] * monoval_i[1][2];
-              grad_grads[start + my_degree + 1][0][1][1] =
+              grad_grads[start + this->degree() + 1][0][1][1] =
                 -monoval_plus[0][0] * monoval_i[1][3];
-              grad_grads[start + my_degree + 1][1][0][0] =
+              grad_grads[start + this->degree() + 1][1][0][0] =
                 monoval_plus[0][3] * monoval_i[1][0];
-              grad_grads[start + my_degree + 1][1][0][1] =
+              grad_grads[start + this->degree() + 1][1][0][1] =
                 monoval_plus[0][2] * monoval_i[1][1];
-              grad_grads[start + my_degree + 1][1][1][0] =
+              grad_grads[start + this->degree() + 1][1][1][0] =
                 monoval_plus[0][2] * monoval_i[1][1];
-              grad_grads[start + my_degree + 1][1][1][1] =
+              grad_grads[start + this->degree() + 1][1][1][1] =
                 monoval_plus[0][1] * monoval_i[1][2];
             }
         }
-      Assert(start == n_pols - my_degree - 1, ExcInternalError());
+      Assert(start == this->n() - this->degree() - 1, ExcInternalError());
     }
   else if (dim == 3)
     {
@@ -210,20 +209,20 @@ PolynomialsRT_Bubbles<dim>::compute(
       //  monoval_* = x^*, monoval_jplus = x^(j+1)
       for (unsigned int d = 0; d < dim; ++d)
         {
-          monomials[my_degree + 1].value(unit_point(d),
+          monomials[this->degree() + 1].value(unit_point(d),
                                          n_derivatives,
                                          monoval_plus[d]);
-          monomials[my_degree].value(unit_point(d), n_derivatives, monoval[d]);
+          monomials[this->degree()].value(unit_point(d), n_derivatives, monoval[d]);
         }
 
-      const unsigned int n_curls = (my_degree + 1) * (2 * my_degree + 1);
+      const unsigned int n_curls = (this->degree() + 1) * (2 * this->degree() + 1);
       // Span of $\tilde{B}$
-      for (unsigned int i = 0; i <= my_degree; ++i)
+      for (unsigned int i = 0; i <= this->degree(); ++i)
         {
           for (unsigned int d = 0; d < dim; ++d)
             monomials[i].value(unit_point(d), n_derivatives, monoval_i[d]);
 
-          for (unsigned int j = 0; j <= my_degree; ++j)
+          for (unsigned int j = 0; j <= this->degree(); ++j)
             {
               for (unsigned int d = 0; d < dim; ++d)
                 {
@@ -239,7 +238,7 @@ PolynomialsRT_Bubbles<dim>::compute(
                 {
                   values[start][0] = monoval_i[0][0] * monoval_j[1][0] *
                                      monoval[2][0] *
-                                     static_cast<double>(j + my_degree + 2);
+                                     static_cast<double>(j + this->degree() + 2);
                   values[start][1] =
                     -monoval_i[0][1] * monoval_jplus[1][0] * monoval[2][0];
                   values[start][2] =
@@ -249,7 +248,7 @@ PolynomialsRT_Bubbles<dim>::compute(
                     -monoval_jplus[0][0] * monoval_i[1][1] * monoval[2][0];
                   values[start + n_curls][1] =
                     monoval_j[0][0] * monoval_i[1][0] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   values[start + n_curls][2] =
                     -monoval_j[0][0] * monoval_i[1][1] * monoval_plus[2][0];
 
@@ -259,15 +258,15 @@ PolynomialsRT_Bubbles<dim>::compute(
                     -monoval_j[0][0] * monoval_plus[1][0] * monoval_i[2][1];
                   values[start + 2 * n_curls][2] =
                     monoval_j[0][0] * monoval[1][0] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
 
                   // Only unique triples of powers (i j k)
                   // and (i k j) are allowed, 0 <= i,j <= k
-                  if (j != my_degree)
+                  if (j != this->degree())
                     {
                       values[start + 1][0] =
                         monoval_i[0][0] * monoval[1][0] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       values[start + 1][1] =
                         -monoval_i[0][1] * monoval_plus[1][0] * monoval_j[2][0];
                       values[start + 1][2] =
@@ -277,7 +276,7 @@ PolynomialsRT_Bubbles<dim>::compute(
                         -monoval_plus[0][0] * monoval_i[1][1] * monoval_j[2][0];
                       values[start + n_curls + 1][1] =
                         monoval[0][0] * monoval_i[1][0] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       values[start + n_curls + 1][2] =
                         -monoval[0][0] * monoval_i[1][1] * monoval_jplus[2][0];
 
@@ -287,7 +286,7 @@ PolynomialsRT_Bubbles<dim>::compute(
                         -monoval[0][0] * monoval_jplus[1][0] * monoval_i[2][1];
                       values[start + 2 * n_curls + 1][2] =
                         monoval[0][0] * monoval_j[1][0] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                     }
                 }
 
@@ -295,13 +294,13 @@ PolynomialsRT_Bubbles<dim>::compute(
                 {
                   grads[start][0][0] = monoval_i[0][1] * monoval_j[1][0] *
                                        monoval[2][0] *
-                                       static_cast<double>(j + my_degree + 2);
+                                       static_cast<double>(j + this->degree() + 2);
                   grads[start][0][1] = monoval_i[0][0] * monoval_j[1][1] *
                                        monoval[2][0] *
-                                       static_cast<double>(j + my_degree + 2);
+                                       static_cast<double>(j + this->degree() + 2);
                   grads[start][0][2] = monoval_i[0][0] * monoval_j[1][0] *
                                        monoval[2][1] *
-                                       static_cast<double>(j + my_degree + 2);
+                                       static_cast<double>(j + this->degree() + 2);
                   grads[start][1][0] =
                     -monoval_i[0][2] * monoval_jplus[1][0] * monoval[2][0];
                   grads[start][1][1] =
@@ -323,13 +322,13 @@ PolynomialsRT_Bubbles<dim>::compute(
                     -monoval_jplus[0][0] * monoval_i[1][1] * monoval[2][1];
                   grads[start + n_curls][1][0] =
                     monoval_j[0][1] * monoval_i[1][0] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grads[start + n_curls][1][1] =
                     monoval_j[0][0] * monoval_i[1][1] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grads[start + n_curls][1][2] =
                     monoval_j[0][0] * monoval_i[1][0] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grads[start + n_curls][2][0] =
                     -monoval_j[0][1] * monoval_i[1][1] * monoval_plus[2][0];
                   grads[start + n_curls][2][1] =
@@ -351,25 +350,25 @@ PolynomialsRT_Bubbles<dim>::compute(
                     -monoval_j[0][0] * monoval_plus[1][0] * monoval_i[2][2];
                   grads[start + 2 * n_curls][2][0] =
                     monoval_j[0][1] * monoval[1][0] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grads[start + 2 * n_curls][2][1] =
                     monoval_j[0][0] * monoval[1][1] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grads[start + 2 * n_curls][2][2] =
                     monoval_j[0][0] * monoval[1][0] * monoval_i[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
 
-                  if (j != my_degree)
+                  if (j != this->degree())
                     {
                       grads[start + 1][0][0] =
                         monoval_i[0][1] * monoval[1][0] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + 1][0][1] =
                         monoval_i[0][0] * monoval[1][1] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + 1][0][2] =
                         monoval_i[0][0] * monoval[1][0] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + 1][1][0] =
                         -monoval_i[0][2] * monoval_plus[1][0] * monoval_j[2][0];
                       grads[start + 1][1][1] =
@@ -391,13 +390,13 @@ PolynomialsRT_Bubbles<dim>::compute(
                         -monoval_plus[0][0] * monoval_i[1][1] * monoval_j[2][1];
                       grads[start + n_curls + 1][1][0] =
                         monoval[0][1] * monoval_i[1][0] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + n_curls + 1][1][1] =
                         monoval[0][0] * monoval_i[1][1] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + n_curls + 1][1][2] =
                         monoval[0][0] * monoval_i[1][0] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + n_curls + 1][2][0] =
                         -monoval[0][1] * monoval_i[1][1] * monoval_jplus[2][0];
                       grads[start + n_curls + 1][2][1] =
@@ -419,13 +418,13 @@ PolynomialsRT_Bubbles<dim>::compute(
                         -monoval[0][0] * monoval_jplus[1][0] * monoval_i[2][2];
                       grads[start + 2 * n_curls + 1][2][0] =
                         monoval[0][1] * monoval_j[1][0] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + 2 * n_curls + 1][2][1] =
                         monoval[0][0] * monoval_j[1][1] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grads[start + 2 * n_curls + 1][2][2] =
                         monoval[0][0] * monoval_j[1][0] * monoval_i[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                     }
                 }
 
@@ -433,31 +432,31 @@ PolynomialsRT_Bubbles<dim>::compute(
                 {
                   grad_grads[start][0][0][0] =
                     monoval_i[0][2] * monoval_j[1][0] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][0][1] =
                     monoval_i[0][1] * monoval_j[1][1] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][0][2] =
                     monoval_i[0][1] * monoval_j[1][0] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][1][0] =
                     monoval_i[0][1] * monoval_j[1][1] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][1][1] =
                     monoval_i[0][0] * monoval_j[1][2] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][1][2] =
                     monoval_i[0][0] * monoval_j[1][1] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][2][0] =
                     monoval_i[0][1] * monoval_j[1][0] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][2][1] =
                     monoval_i[0][0] * monoval_j[1][1] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][0][2][2] =
                     monoval_i[0][0] * monoval_j[1][0] * monoval[2][2] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start][1][0][0] =
                     -monoval_i[0][3] * monoval_jplus[1][0] * monoval[2][0];
                   grad_grads[start][1][0][1] =
@@ -515,31 +514,31 @@ PolynomialsRT_Bubbles<dim>::compute(
                     -monoval_jplus[0][0] * monoval_i[1][1] * monoval[2][2];
                   grad_grads[start + n_curls][1][0][0] =
                     monoval_j[0][2] * monoval_i[1][0] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][0][1] =
                     monoval_j[0][1] * monoval_i[1][1] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][0][2] =
                     monoval_j[0][1] * monoval_i[1][0] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][1][0] =
                     monoval_j[0][1] * monoval_i[1][1] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][1][1] =
                     monoval_j[0][0] * monoval_i[1][2] * monoval[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][1][2] =
                     monoval_j[0][0] * monoval_i[1][1] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][2][0] =
                     monoval_j[0][1] * monoval_i[1][0] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][2][1] =
                     monoval_j[0][0] * monoval_i[1][1] * monoval[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][1][2][2] =
                     monoval_j[0][0] * monoval_i[1][0] * monoval[2][2] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + n_curls][2][0][0] =
                     -monoval_j[0][2] * monoval_i[1][1] * monoval_plus[2][0];
                   grad_grads[start + n_curls][2][0][1] =
@@ -597,61 +596,61 @@ PolynomialsRT_Bubbles<dim>::compute(
                     -monoval_j[0][0] * monoval_plus[1][0] * monoval_i[2][3];
                   grad_grads[start + 2 * n_curls][2][0][0] =
                     monoval_j[0][2] * monoval[1][0] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][0][1] =
                     monoval_j[0][1] * monoval[1][1] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][0][2] =
                     monoval_j[0][1] * monoval[1][0] * monoval_i[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][1][0] =
                     monoval_j[0][1] * monoval[1][1] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][1][1] =
                     monoval_j[0][0] * monoval[1][2] * monoval_i[2][0] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][1][2] =
                     monoval_j[0][0] * monoval[1][1] * monoval_i[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][2][0] =
                     monoval_j[0][1] * monoval[1][0] * monoval_i[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][2][1] =
                     monoval_j[0][0] * monoval[1][1] * monoval_i[2][1] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
                   grad_grads[start + 2 * n_curls][2][2][2] =
                     monoval_j[0][0] * monoval[1][0] * monoval_i[2][2] *
-                    static_cast<double>(j + my_degree + 2);
+                    static_cast<double>(j + this->degree() + 2);
 
-                  if (j != my_degree)
+                  if (j != this->degree())
                     {
                       grad_grads[start + 1][0][0][0] =
                         monoval_i[0][2] * monoval[1][0] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][0][1] =
                         monoval_i[0][1] * monoval[1][1] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][0][2] =
                         monoval_i[0][1] * monoval[1][0] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][1][0] =
                         monoval_i[0][1] * monoval[1][1] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][1][1] =
                         monoval_i[0][0] * monoval[1][2] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][1][2] =
                         monoval_i[0][0] * monoval[1][1] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][2][0] =
                         monoval_i[0][1] * monoval[1][0] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][2][1] =
                         monoval_i[0][0] * monoval[1][1] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][0][2][2] =
                         monoval_i[0][0] * monoval[1][0] * monoval_j[2][2] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 1][1][0][0] =
                         -monoval_i[0][3] * monoval_plus[1][0] * monoval_j[2][0];
                       grad_grads[start + 1][1][0][1] =
@@ -709,31 +708,31 @@ PolynomialsRT_Bubbles<dim>::compute(
                         -monoval_plus[0][0] * monoval_i[1][1] * monoval_j[2][2];
                       grad_grads[start + n_curls + 1][1][0][0] =
                         monoval[0][2] * monoval_i[1][0] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][0][1] =
                         monoval[0][1] * monoval_i[1][1] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][0][2] =
                         monoval[0][1] * monoval_i[1][0] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][1][0] =
                         monoval[0][1] * monoval_i[1][1] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][1][1] =
                         monoval[0][0] * monoval_i[1][2] * monoval_j[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][1][2] =
                         monoval[0][0] * monoval_i[1][1] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][2][0] =
                         monoval[0][1] * monoval_i[1][0] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][2][1] =
                         monoval[0][0] * monoval_i[1][1] * monoval_j[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][1][2][2] =
                         monoval[0][0] * monoval_i[1][0] * monoval_j[2][2] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + n_curls + 1][2][0][0] =
                         -monoval[0][2] * monoval_i[1][1] * monoval_jplus[2][0];
                       grad_grads[start + n_curls + 1][2][0][1] =
@@ -791,41 +790,41 @@ PolynomialsRT_Bubbles<dim>::compute(
                         -monoval[0][0] * monoval_jplus[1][0] * monoval_i[2][3];
                       grad_grads[start + 2 * n_curls + 1][2][0][0] =
                         monoval[0][2] * monoval_j[1][0] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][0][1] =
                         monoval[0][1] * monoval_j[1][1] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][0][2] =
                         monoval[0][1] * monoval_j[1][0] * monoval_i[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][1][0] =
                         monoval[0][1] * monoval_j[1][1] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][1][1] =
                         monoval[0][0] * monoval_j[1][2] * monoval_i[2][0] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][1][2] =
                         monoval[0][0] * monoval_j[1][1] * monoval_i[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][2][0] =
                         monoval[0][1] * monoval_j[1][0] * monoval_i[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][2][1] =
                         monoval[0][0] * monoval_j[1][1] * monoval_i[2][1] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                       grad_grads[start + 2 * n_curls + 1][2][2][2] =
                         monoval[0][0] * monoval_j[1][0] * monoval_i[2][2] *
-                        static_cast<double>(j + my_degree + 2);
+                        static_cast<double>(j + this->degree() + 2);
                     }
                 }
 
-              if (j == my_degree)
+              if (j == this->degree())
                 start += 1;
               else
                 start += 2;
             }
         }
-      Assert(start == n_pols - 2 * n_curls, ExcInternalError());
+      Assert(start == this->n() - 2 * n_curls, ExcInternalError());
     }
 }
 
@@ -833,7 +832,7 @@ PolynomialsRT_Bubbles<dim>::compute(
 
 template <int dim>
 unsigned int
-PolynomialsRT_Bubbles<dim>::compute_n_pols(const unsigned int k)
+PolynomialsRT_Bubbles<dim>::compute_n_pols(const unsigned int k) const
 {
   if (dim == 1 || dim == 2 || dim == 3)
     return dim * Utilities::fixed_power<dim>(k + 1);
