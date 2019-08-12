@@ -38,7 +38,8 @@ DEAL_II_NAMESPACE_OPEN
 
 template <int dim>
 FE_BDM<dim>::FE_BDM(const unsigned int deg)
-  : FE_PolyTensor<PolynomialsBDM<dim>, dim>(
+  : FE_PolyTensor<dim>(
+      PolynomialsBDM<dim>(deg),
       deg,
       FiniteElementData<dim>(get_dpo_vector(deg),
                              dim,

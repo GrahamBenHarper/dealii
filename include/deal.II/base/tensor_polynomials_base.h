@@ -124,8 +124,8 @@ public:
    * Return the number of polynomials in the space based on the polynomial space
    * degree @p k. This must be overridden by the derived class.
    */
-  virtual unsigned int
-  compute_n_pols(const unsigned int k) const = 0;
+  static unsigned int
+  compute_n_pols(const unsigned int k);
 
 private:
   /**

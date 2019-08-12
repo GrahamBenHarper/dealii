@@ -69,7 +69,8 @@ namespace internal
 
 template <int dim>
 FE_Nedelec<dim>::FE_Nedelec(const unsigned int order)
-  : FE_PolyTensor<PolynomialsNedelec<dim>, dim>(
+  : FE_PolyTensor<dim>(
+      PolynomialsNedelc<dim>(order),
       order,
       FiniteElementData<dim>(get_dpo_vector(order),
                              dim,

@@ -103,7 +103,7 @@ DEAL_II_NAMESPACE_OPEN
  */
 template <int dim>
 class FE_RaviartThomas
-  : public FE_PolyTensor<PolynomialsRaviartThomas<dim>, dim>
+  : public FE_PolyTensor<dim>
 {
 public:
   /**
@@ -151,6 +151,11 @@ public:
   memory_consumption() const override;
 
 private:
+  /**
+   * The polynomial space for the finite element.
+   */
+  const PolynomialsRaviartThomas<dim> polys;
+
   /**
    * Only for internal use. Its full name is @p get_dofs_per_object_vector
    * function and it creates the @p dofs_per_object vector that is needed
@@ -245,7 +250,7 @@ private:
  */
 template <int dim>
 class FE_RaviartThomasNodal
-  : public FE_PolyTensor<PolynomialsRaviartThomas<dim>, dim>
+  : public FE_PolyTensor<dim>
 {
 public:
   /**
