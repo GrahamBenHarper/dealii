@@ -428,7 +428,7 @@ square for (unsigned int j=0;j<moment_weight.size();++j)
 
 template <int dim>
 unsigned int
-PolynomialsBDM<dim>::compute_n_pols(unsigned int k) const
+PolynomialsBDM<dim>::compute_n_pols(unsigned int k)
 {
   if (dim == 1)
     return k + 1;

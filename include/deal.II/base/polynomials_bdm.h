@@ -142,8 +142,8 @@ public:
    * without requiring to build an object of PolynomialsBDM. This is required
    * by the FiniteElement classes.
    */
-  unsigned int
-  compute_n_pols(unsigned int k) const override;
+  static unsigned int
+  compute_n_pols(unsigned int k);
 
   // documentation inherited from the base class
   virtual std::unique_ptr<TensorPolynomialsBase<dim>>

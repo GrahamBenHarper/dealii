@@ -17,6 +17,7 @@
 #include <deal.II/base/polynomial.h>
 #include <deal.II/base/polynomials_nedelec.h>
 #include <deal.II/base/quadrature_lib.h>
+#include <deal.II/base/std_cxx14/memory.h>
 
 #include <iomanip>
 #include <iostream>
@@ -26,9 +27,8 @@ DEAL_II_NAMESPACE_OPEN
 
 template <int dim>
 PolynomialsNedelec<dim>::PolynomialsNedelec(const unsigned int k)
-  : my_degree(k)
+  : TensorPolynomialsBase<dim>(k, compute_n_pols(k))
   , polynomial_space(create_polynomials(k))
-  , n_pols(compute_n_pols(k))
 {}
 
 template <int dim>
@@ -59,6 +59,8 @@ PolynomialsNedelec<dim>::compute(
   std::vector<Tensor<4, dim>> &third_derivatives,
   std::vector<Tensor<5, dim>> &fourth_derivatives) const
 {
+  const unsigned int n_pols = this->n();
+
   Assert(values.size() == n_pols || values.size() == 0,
          ExcDimensionMismatch(values.size(), n_pols));
   Assert(grads.size() == n_pols || grads.size() == 0,
@@ -69,6 +71,9 @@ PolynomialsNedelec<dim>::compute(
          ExcDimensionMismatch(third_derivatives.size(), n_pols));
   Assert(fourth_derivatives.size() == n_pols || fourth_derivatives.size() == 0,
          ExcDimensionMismatch(fourth_derivatives.size(), n_pols));
+
+  const unsigned int my_degree = this->degree();
+
 
   // third and fourth derivatives not implemented
   (void)third_derivatives;
@@ -1503,6 +1508,14 @@ PolynomialsNedelec<dim>::compute_n_pols(unsigned int k)
           return 0;
         }
     }
+}
+
+
+template <int dim>
+std::unique_ptr<TensorPolynomialsBase<dim>>
+PolynomialsNedelec<dim>::clone() const
+{
+  return std_cxx14::make_unique<PolynomialsNedelec<dim>>(*this);
 }
 
 

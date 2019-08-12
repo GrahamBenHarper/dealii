@@ -154,7 +154,7 @@ PolynomialsABF<dim>::compute(
 
 template <int dim>
 unsigned int
-PolynomialsABF<dim>::compute_n_pols(const unsigned int k) const
+PolynomialsABF<dim>::compute_n_pols(const unsigned int k)
 {
   switch (dim)
     {
