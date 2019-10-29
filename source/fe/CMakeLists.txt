@@ -51,6 +51,7 @@ SET(_unity_include_src
   fe_series_legendre.cc
   fe_system.cc
   fe_enriched.cc
+  fe_tensor_product_polynomials.cc
   fe_tools.cc
   fe_trace.cc
   mapping_c1.cc
