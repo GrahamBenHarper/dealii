@@ -119,6 +119,7 @@ SET(_inst
   fe_series_legendre.inst.in
   fe_system.inst.in
   fe_enriched.inst.in
+  fe_tensor_product_polynomials.inst.in
   fe_tools.inst.in
   fe_tools_interpolate.inst.in
   fe_tools_extrapolate.inst.in
