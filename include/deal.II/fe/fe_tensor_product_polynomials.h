@@ -36,15 +36,19 @@ DEAL_II_NAMESPACE_OPEN
  * @author Graham Harper
  * @date 2019
  */
-template <int dim>
-class FE_TensorProductPolynomials : public FE_Poly<TensorProductPolynomials<dim>, dim>
+template <int dim,
+          int spacedim = dim>
+class FE_TensorProductPolynomials : public FE_Poly<TensorProductPolynomials<dim>, spacedim>
 {
 public:
   /**
-   * ADD MORE
+   * Constructor. <tt>pols</tt> is a vector of objects that should be derived
+   * or otherwise convertible to one-dimensional polynomial objects of type @p
+   * PolynomialType (template argument of class). It will be copied element by
+   * element into a private variable.
    */
-  FE_TensorProductPolynomials(const unsigned int order                 = 0,
-                    const unsigned int n_face_support_points = 2);
+  template <class Pol>
+  FE_TensorProductPolynomials(const std::vector<Pol> &pols);
 
   virtual std::string
   get_name() const override;

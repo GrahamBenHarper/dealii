@@ -50,9 +50,9 @@ FE_TensorProductPolynomials<dim, spacedim>::FE_TensorProductPolynomials(
 
 
 
-template <int dim>
+template <int dim, int spacedim>
 std::vector<unsigned int>
-FE_TensorProductPolynomials<dim>::get_dpo_vector()
+FE_TensorProductPolynomials<dim, spacedim>::get_dpo_vector()
 {
   std::vector<unsigned int> dpo(dim + 1, 0);
   dpo[dim - 1] = 1;
@@ -64,7 +64,7 @@ FE_TensorProductPolynomials<dim>::get_dpo_vector()
 
 template <int dim>
 std::string
-FE_TensorProductPolynomials<dim>::get_name() const
+FE_TensorProductPolynomials<dim, spacedim>::get_name() const
 {
   std::ostringstream namebuf;
   namebuf << "FE_TensorProductPolynomials"
@@ -75,19 +75,19 @@ FE_TensorProductPolynomials<dim>::get_name() const
 
 
 
-template <int dim>
-std::unique_ptr<FiniteElement<dim, dim>>
+template <int dim, int spacedim>
+std::unique_ptr<FiniteElement<dim, spacedim>>
 FE_TensorProductPolynomials<dim>::clone() const
 {
-  return std_cxx14::make_unique<FE_TensorProductPolynomials<dim>>(
+  return std_cxx14::make_unique<FE_TensorProductPolynomials<dim, spacedim>>(
     this->order, this->n_face_support_points);
 }
 
 
 
-template <int dim>
+template <int dim, int spacedim>
 void
-FE_TensorProductPolynomials<dim>::initialize_support_points()
+FE_TensorProductPolynomials<dim, spacedim>::initialize_support_points()
 {
   Assert(dim == 2, ExcNotImplemented());
   dealii::QGauss<dim - 1> face_quadrature(this->n_face_support_points);
@@ -108,9 +108,9 @@ FE_TensorProductPolynomials<dim>::initialize_support_points()
 
 
 
-template <int dim>
+template <int dim, int spacedim>
 void
-FE_TensorProductPolynomials<dim>::convert_generalized_support_point_values_to_dof_values(
+FE_TensorProductPolynomials<dim, spacedim>::convert_generalized_support_point_values_to_dof_values(
   const std::vector<Vector<double>> &support_point_values,
   std::vector<double> &              nodal_values) const
 {
