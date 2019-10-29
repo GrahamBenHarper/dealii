@@ -53,7 +53,7 @@ public:
   virtual std::string
   get_name() const override;
 
-  virtual std::unique_ptr<FiniteElement<dim, dim>>
+  virtual std::unique_ptr<FiniteElement<dim, spacedim>>
   clone() const override;
 
   // documentation inherited from the base class
