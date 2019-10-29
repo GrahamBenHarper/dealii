@@ -1,0 +1,3 @@
+New: The special case of FE_Poly<TensorProductPolynomials, dim, spacedim> has been changed to a FE_TensorProductPolynomials<dim, spacedim> class instead.
+<br>
+(Graham Harper, 10/28/2019)
