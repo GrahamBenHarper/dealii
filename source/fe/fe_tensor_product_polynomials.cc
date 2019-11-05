@@ -31,7 +31,7 @@ DEAL_II_NAMESPACE_OPEN
 template <int dim, int spacedim>
 template <class Pol>
 FE_TensorProductPolynomials<dim, spacedim>::FE_TensorProductPolynomials(const std::vector<Pol> &pols)
-  : FE_Poly<TensorProductPolynomials<dim>, dim>(
+  : FE_Poly<TensorProductPolynomials<dim>, spacedim>(
       TensorProductPolynomials<dim>(pols),
       FiniteElementData<dim>(this->get_dpo_vector(),
                              1,
@@ -39,6 +39,8 @@ FE_TensorProductPolynomials<dim, spacedim>::FE_TensorProductPolynomials(const st
                              FiniteElementData<dim>::L2),
       std::vector<bool>(4, false), // restriction not implemented
       std::vector<ComponentMask>(4, std::vector<bool>(1, true)))
+  , order(1)
+  , n_face_support_points(1)
 {
   this->initialize_support_points();
 }
@@ -64,7 +66,7 @@ FE_TensorProductPolynomials<dim, spacedim>::get_name() const
   std::ostringstream namebuf;
   namebuf << "FE_TensorProductPolynomials"
           << "<" << dim << ">"
-          << "(" << this->order << ", " << this->n_face_support_points << ")";
+          << "(" << this->order << ")";
   return namebuf.str();
 }
 
@@ -74,8 +76,7 @@ template <int dim, int spacedim>
 std::unique_ptr<FiniteElement<dim, spacedim>>
 FE_TensorProductPolynomials<dim, spacedim>::clone() const
 {
-  return std_cxx14::make_unique<FE_TensorProductPolynomials<dim, spacedim>>(
-    this->order, this->n_face_support_points);
+  return std_cxx14::make_unique<FE_TensorProductPolynomials<dim, spacedim>>(*this);
 }
 
 
