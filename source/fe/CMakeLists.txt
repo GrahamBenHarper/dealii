@@ -34,6 +34,7 @@ SET(_unity_include_src
   fe_nedelec_sz.cc
   fe_nothing.cc
   fe_poly.cc
+  fe_poly2.cc
   fe_poly_tensor.cc
   fe_p1nc.cc
   fe_q_base.cc
@@ -103,6 +104,7 @@ SET(_inst
   fe_nedelec_sz.inst.in
   fe_nothing.inst.in
   fe_poly.inst.in
+  fe_poly2.inst.in
   fe_poly_tensor.inst.in
   fe_q_base.inst.in
   fe_q_bubbles.inst.in
