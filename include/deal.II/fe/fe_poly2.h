@@ -20,6 +20,7 @@
 #include <deal.II/base/config.h>
 
 #include <deal.II/base/quadrature.h>
+#include <deal.II/base/scalar_polynomials_base.h>
 #include <deal.II/base/std_cxx14/memory.h>
 
 #include <deal.II/fe/fe.h>
@@ -75,19 +76,22 @@ DEAL_II_NAMESPACE_OPEN
  * @author Ralf Hartmann 2004, Guido Kanschat, 2009
  */
 
-template <class PolynomialType,
-          int dim      = PolynomialType::dimension,
-          int spacedim = dim>
+template <int dim, int spacedim = dim>
 class FE_Poly2 : public FiniteElement<dim, spacedim>
 {
 public:
   /**
    * Constructor.
    */
-  FE_Poly2(const PolynomialType &            poly_space,
-          const FiniteElementData<dim> &    fe_data,
-          const std::vector<bool> &         restriction_is_additive_flags,
-          const std::vector<ComponentMask> &nonzero_components);
+  FE_Poly2(const ScalarPolynomialsBase<dim> &poly_space,
+           const FiniteElementData<dim> &    fe_data,
+           const std::vector<bool> &         restriction_is_additive_flags,
+           const std::vector<ComponentMask> &nonzero_components);
+
+  /**
+   * Copy constructor.
+   */
+  FE_Poly2(const FE_Poly2 &fe);
 
   /**
    * Return the polynomial degree of this finite element, i.e. the value
@@ -316,12 +320,12 @@ protected:
                         update_3rd_derivatives))
       for (unsigned int i = 0; i < n_q_points; ++i)
         {
-          poly_space.evaluate(quadrature.point(i),
-                              values,
-                              grads,
-                              grad_grads,
-                              third_derivatives,
-                              fourth_derivatives);
+          poly_space->evaluate(quadrature.point(i),
+                               values,
+                               grads,
+                               grad_grads,
+                               third_derivatives,
+                               fourth_derivatives);
 
           // the values of shape functions at quadrature points don't change.
           // consequently, write these values right into the output array if
@@ -491,10 +495,9 @@ protected:
     const unsigned int dof) const;
 
   /**
-   * The polynomial space. Its type is given by the template parameter
-   * PolynomialType.
+   * A pointer to the polynomial space.
    */
-  PolynomialType poly_space;
+  const std::unique_ptr<ScalarPolynomialsBase<dim>> poly_space;
 };
 
 /*@}*/
