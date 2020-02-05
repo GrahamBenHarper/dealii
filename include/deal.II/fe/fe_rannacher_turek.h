@@ -22,7 +22,7 @@
 #include <deal.II/base/polynomials_rannacher_turek.h>
 
 #include <deal.II/fe/fe_base.h>
-#include <deal.II/fe/fe_poly.h>
+#include <deal.II/fe/fe_poly2.h>
 
 #include <string>
 #include <vector>
@@ -81,7 +81,7 @@ DEAL_II_NAMESPACE_OPEN
  * @date 2015
  */
 template <int dim>
-class FE_RannacherTurek : public FE_Poly<PolynomialsRannacherTurek<dim>, dim>
+class FE_RannacherTurek : public FE_Poly2<dim>
 {
 public:
   /**

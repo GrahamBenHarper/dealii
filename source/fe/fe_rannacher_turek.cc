@@ -32,8 +32,7 @@ template <int dim>
 FE_RannacherTurek<dim>::FE_RannacherTurek(
   const unsigned int order,
   const unsigned int n_face_support_points)
-  : FE_Poly<PolynomialsRannacherTurek<dim>, dim>(
-      PolynomialsRannacherTurek<dim>(),
+  : FE_Poly2<dim>(PolynomialsRannacherTurek<dim>(),
       FiniteElementData<dim>(this->get_dpo_vector(),
                              1,
                              2,
