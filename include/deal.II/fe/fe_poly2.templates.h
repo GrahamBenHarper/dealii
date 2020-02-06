@@ -31,8 +31,8 @@
 
 DEAL_II_NAMESPACE_OPEN
 
-template <class PolynomialType, int dim, int spacedim>
-FE_Poly2<PolynomialType, dim, spacedim>::FE_Poly2(
+template <int dim, int spacedim>
+FE_Poly2<dim, spacedim>::FE_Poly2(
   const ScalarPolynomialsBase<dim> &poly_space,
   const FiniteElementData<dim> &    fe_data,
   const std::vector<bool> &         restriction_is_additive_flags,
