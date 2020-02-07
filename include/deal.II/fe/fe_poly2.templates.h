@@ -52,135 +52,135 @@ FE_Poly2<dim, spacedim>::get_degree() const
 }
 
 
-//template <int dim, int spacedim>
-//double
-//FE_Poly2<dim, spacedim>::shape_value(const unsigned int i,
-//                                     const Point<dim> & p) const
-//{
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  return poly_space.compute_value(i, p);
-//}
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//double
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_value_component(
-//  const unsigned int i,
-//  const Point<dim> & p,
-//  const unsigned int component) const
-//{
-//  (void)component;
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  AssertIndexRange(component, 1);
-//  return poly_space.compute_value(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<1, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_grad(const unsigned int i,
-//                                                   const Point<dim> & p) const
-//{
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  return poly_space.template compute_derivative<1>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<1, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_grad_component(
-//  const unsigned int i,
-//  const Point<dim> & p,
-//  const unsigned int component) const
-//{
-//  (void)component;
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  AssertIndexRange(component, 1);
-//  return poly_space.template compute_derivative<1>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<2, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_grad_grad(
-//  const unsigned int i,
-//  const Point<dim> & p) const
-//{
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  return poly_space.template compute_derivative<2>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<2, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_grad_grad_component(
-//  const unsigned int i,
-//  const Point<dim> & p,
-//  const unsigned int component) const
-//{
-//  (void)component;
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  AssertIndexRange(component, 1);
-//  return poly_space.template compute_derivative<2>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<3, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_3rd_derivative(
-//  const unsigned int i,
-//  const Point<dim> & p) const
-//{
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  return poly_space.template compute_derivative<3>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<3, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_3rd_derivative_component(
-//  const unsigned int i,
-//  const Point<dim> & p,
-//  const unsigned int component) const
-//{
-//  (void)component;
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  AssertIndexRange(component, 1);
-//  return poly_space.template compute_derivative<3>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<4, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_4th_derivative(
-//  const unsigned int i,
-//  const Point<dim> & p) const
-//{
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  return poly_space.template compute_derivative<4>(i, p);
-//}
-//
-//
-//
-//template <class PolynomialType, int dim, int spacedim>
-//Tensor<4, dim>
-//FE_Poly2<PolynomialType, dim, spacedim>::shape_4th_derivative_component(
-//  const unsigned int i,
-//  const Point<dim> & p,
-//  const unsigned int component) const
-//{
-//  (void)component;
-//  AssertIndexRange(i, this->dofs_per_cell);
-//  AssertIndexRange(component, 1);
-//  return poly_space.template compute_derivative<4>(i, p);
-//}
+template <int dim, int spacedim>
+double
+FE_Poly2<dim, spacedim>::shape_value(const unsigned int i,
+                                     const Point<dim> & p) const
+{
+  AssertIndexRange(i, this->dofs_per_cell);
+  return poly_space->compute_value(i, p);
+}
+
+
+template <int dim, int spacedim>
+double
+FE_Poly2<dim, spacedim>::shape_value_component(
+  const unsigned int i,
+  const Point<dim> & p,
+  const unsigned int component) const
+{
+  (void)component;
+  AssertIndexRange(i, this->dofs_per_cell);
+  AssertIndexRange(component, 1);
+  return poly_space->compute_value(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<1, dim>
+FE_Poly2<dim, spacedim>::shape_grad(const unsigned int i,
+                                                   const Point<dim> & p) const
+{
+  AssertIndexRange(i, this->dofs_per_cell);
+  return poly_space->template compute_derivative<1>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<1, dim>
+FE_Poly2<dim, spacedim>::shape_grad_component(
+  const unsigned int i,
+  const Point<dim> & p,
+  const unsigned int component) const
+{
+  (void)component;
+  AssertIndexRange(i, this->dofs_per_cell);
+  AssertIndexRange(component, 1);
+  return poly_space->template compute_derivative<1>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<2, dim>
+FE_Poly2<dim, spacedim>::shape_grad_grad(
+  const unsigned int i,
+  const Point<dim> & p) const
+{
+  AssertIndexRange(i, this->dofs_per_cell);
+  return poly_space->template compute_derivative<2>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<2, dim>
+FE_Poly2<dim, spacedim>::shape_grad_grad_component(
+  const unsigned int i,
+  const Point<dim> & p,
+  const unsigned int component) const
+{
+  (void)component;
+  AssertIndexRange(i, this->dofs_per_cell);
+  AssertIndexRange(component, 1);
+  return poly_space->template compute_derivative<2>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<3, dim>
+FE_Poly2<dim, spacedim>::shape_3rd_derivative(
+  const unsigned int i,
+  const Point<dim> & p) const
+{
+  AssertIndexRange(i, this->dofs_per_cell);
+  return poly_space->template compute_derivative<3>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<3, dim>
+FE_Poly2<dim, spacedim>::shape_3rd_derivative_component(
+  const unsigned int i,
+  const Point<dim> & p,
+  const unsigned int component) const
+{
+  (void)component;
+  AssertIndexRange(i, this->dofs_per_cell);
+  AssertIndexRange(component, 1);
+  return poly_space->template compute_derivative<3>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<4, dim>
+FE_Poly2<dim, spacedim>::shape_4th_derivative(
+  const unsigned int i,
+  const Point<dim> & p) const
+{
+  AssertIndexRange(i, this->dofs_per_cell);
+  return poly_space->template compute_derivative<4>(i, p);
+}
+
+
+
+template <int dim, int spacedim>
+Tensor<4, dim>
+FE_Poly2<dim, spacedim>::shape_4th_derivative_component(
+  const unsigned int i,
+  const Point<dim> & p,
+  const unsigned int component) const
+{
+  (void)component;
+  AssertIndexRange(i, this->dofs_per_cell);
+  AssertIndexRange(component, 1);
+  return poly_space->template compute_derivative<4>(i, p);
+}
 
 
 
